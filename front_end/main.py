@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, make_response
+import requests
 
 app = Flask(__name__)
 
@@ -22,6 +23,13 @@ def health_check():
         "status": "healthy",
     }
     return make_response(jsonify(health_status), 200)
+
+@app.route('/teams')
+def teams():
+    url = f"https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams"
+    response = requests.get(url)
+    data = response.json()
+    return make_response(data, 200)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000, debug=True)
