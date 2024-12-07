@@ -29,7 +29,8 @@ def teams():
     url = f"https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams"
     response = requests.get(url)
     data = response.json()
-    teams = data["sports"]["leagues"]["teams"]["team"]["displayName"]
+    # teams = data["sports"]["leagues"]["teams"]["team"]["displayName"]
+    teams = data["sports"][1]["name"]
     return make_response(teams, 200)
 
 if __name__ == "__main__":
