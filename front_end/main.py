@@ -29,9 +29,14 @@ def teams():
     url = f"https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams"
     response = requests.get(url)
     data = response.json()
-    # teams = data["sports"]["leagues"]["teams"]["team"]["displayName"]
-    teams = data["sports"][0]["leagues"][0]["teams"][0]["team"]["displayName"]
-    return make_response(teams, 200)
+    teams = {"teams": []}
+    for t in data["sports"][0]["leagues"][0]["teams"]:
+        team = {"id": t["team"]["id"], "name": t["team"]["displayName"]}
+        teams["teams"].append(team)
+    # teams = data["sports"][0]["leagues"][0]["teams"][0]["team"]["displayName"]
+    json_teams = json.dump(teams, indent=4)
+    app.logger.info("Retrieving all NFL teams from ESPN")
+    return make_response(json_teams, 200)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000, debug=True)
