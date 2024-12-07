@@ -30,7 +30,7 @@ def teams():
     response = requests.get(url)
     data = response.json()
     # teams = data["sports"]["leagues"]["teams"]["team"]["displayName"]
-    teams = data["sports"][1]["name"]
+    teams = data["sports"][0]["name"]["leagues"][0]["name"]["teams"][0]["team"]["displayName"]
     return make_response(teams, 200)
 
 if __name__ == "__main__":
