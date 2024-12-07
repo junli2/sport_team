@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, make_response
 import requests
+import json
 
 app = Flask(__name__)
 
@@ -26,17 +27,21 @@ def health_check():
 
 @app.route('/teams')
 def teams():
-    url = f"https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams"
-    response = requests.get(url)
-    data = response.json()
-    teams = {"teams": []}
-    for t in data["sports"][0]["leagues"][0]["teams"]:
-        team = {"id": t["team"]["id"], "name": t["team"]["displayName"]}
-        teams["teams"].append(team)
-    # teams = data["sports"][0]["leagues"][0]["teams"][0]["team"]["displayName"]
-    json_teams = json.dump(teams, indent=4)
     app.logger.info("Retrieving all NFL teams from ESPN")
-    return make_response(json_teams, 200)
+    try:
+        url = f"https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams"
+        response = requests.get(url)
+        data = response.json()
+        teams = {"teams": []}
+        for t in data["sports"][0]["leagues"][0]["teams"]:
+            team = {"id": t["team"]["id"], "name": t["team"]["displayName"]}
+            teams["teams"].append(team)
+        # teams = data["sports"][0]["leagues"][0]["teams"][0]["team"]["displayName"]
+        json_teams = json.dump(teams, indent=4)
+        return make_response(json_teams, 200)
+    except Exception as e:
+        app.logger.error("Failed to retrieve NFL teams from ESPN: %s", str(e))
+        return make_response(jsonify({'error': str(e)}), 500)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000, debug=True)
