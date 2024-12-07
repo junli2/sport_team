@@ -37,7 +37,7 @@ def teams():
             team = {"id": t["team"]["id"], "name": t["team"]["displayName"]}
             teams["teams"].append(team)
         json_teams = json.dumps(teams, indent=4)
-        return make_response(json_teams, 200)
+        return make_response(jsonify(json_teams), 200)
     except Exception as e:
         app.logger.error("Failed to retrieve NFL teams from ESPN: %s", str(e))
         return make_response(jsonify({'error': str(e)}), 500)
