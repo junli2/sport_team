@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from flask import Flask, jsonify, make_response, Response, request
+import requests
 # from flask_cors import CORS
 
 from team_tracker.models import locker_model
@@ -115,7 +116,6 @@ def get_nfl_teams():
         for t in data["sports"][0]["leagues"][0]["teams"]:
             team = {"id": t["team"]["id"], "name": t["team"]["displayName"]}
             teams["teams"].append(team)
-        # json_teams = json.dumps(teams, indent=4)
         return make_response(jsonify(teams), 200)
     except Exception as e:
         app.logger.error("Failed to retrieve NFL teams from ESPN: %s", str(e))
