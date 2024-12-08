@@ -58,5 +58,22 @@ def team_schedule(team_id: int) -> Response:
         app.logger.error("Failed to retrieve the team schedule from ESPN: %s", str(e))
         return make_response(jsonify({'error': str(e)}), 500)
 
+@app.route('/team-roster/<int:team_id>', methods=['GET'])
+def team_roster(team_id: int) -> Response:
+    app.logger.info("Retrieving the team roster from ESPN")
+    try:
+        url = f"https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{team_id}/roster"
+        response = requests.get(url)
+        data = response.json()
+        roster = {"athletes": []}
+        for p in data["athletes"]:
+            for a in p["items"]:
+                athlete = {"name": a["displayName"], "position": p["position"]}
+                roster["athletes"].append(athlete)
+        return make_response(jsonify(roster), 200)
+    except Exception as e:
+        app.logger.error("Failed to retrieve the team roster from ESPN: %s", str(e))
+        return make_response(jsonify({'error': str(e)}), 500)
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000, debug=True)
