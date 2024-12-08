@@ -42,7 +42,7 @@ def teams():
         app.logger.error("Failed to retrieve NFL teams from ESPN: %s", str(e))
         return make_response(jsonify({'error': str(e)}), 500)
 
-@app.route('/team-schedule')
+@app.route('/team-schedule/<int:team_id>', methods=['GET'])
 def team_schedule(team_id: int) -> Response:
     app.logger.info("Retrieving the team schedule from ESPN")
     try:
