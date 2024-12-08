@@ -42,5 +42,21 @@ def teams():
         app.logger.error("Failed to retrieve NFL teams from ESPN: %s", str(e))
         return make_response(jsonify({'error': str(e)}), 500)
 
+@app.route('/team-schedule')
+def team_schedule(team_id: int) -> Response:
+    app.logger.info("Retrieving the team schedule from ESPN")
+    try:
+        url = f"https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{team_id}/schedule"
+        response = requests.get(url)
+        data = response.json()
+        events = {"events": []}
+        for e in data["events"]:
+            event = {"week": e["week"]["text"], "date": e["date"], "name": t["name"]}
+            teams["events"].append(event)
+        return make_response(jsonify(events), 200)
+    except Exception as e:
+        app.logger.error("Failed to retrieve the team schedule from ESPN: %s", str(e))
+        return make_response(jsonify({'error': str(e)}), 500)
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000, debug=True)
