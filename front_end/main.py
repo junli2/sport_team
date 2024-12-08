@@ -68,7 +68,7 @@ def team_roster(team_id: int) -> Response:
         roster = {"athletes": []}
         for p in data["athletes"]:
             for a in p["items"]:
-                athlete = {"name": a["displayName"], "position": p["position"]}
+                athlete = {"name": a["displayName"], "age": a["age"], "jersey": a["jersey"], "position": p["position"]}
                 roster["athletes"].append(athlete)
         return make_response(jsonify(roster), 200)
     except Exception as e:
