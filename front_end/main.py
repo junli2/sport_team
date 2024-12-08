@@ -51,7 +51,7 @@ def team_schedule(team_id: int) -> Response:
         data = response.json()
         events = {"events": []}
         for e in data["events"]:
-            event = {"week": e["week"]["text"], "date": e["date"], "name": t["name"]}
+            event = {"week": e["week"]["text"], "date": e["date"], "name": e["name"]}
             teams["events"].append(event)
         return make_response(jsonify(events), 200)
     except Exception as e:
